@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DARK CONTROL PRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+[hidden]{display:none!important}
+:root{--bg:#0e0d0c;--surf:#171513;--raise:#221f1b;--line:#2f2a24;--text:#ece5d6;--mut:#958c7f;--gold:#c9a24a;--red:#7b1f1f;--err:#d9776b;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:400 14px/1.7 "IBM Plex Sans Arabic",Tahoma,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h1{font-size:18px;margin:0;font-weight:600}
+h3{font-size:15px;margin:0 0 12px;font-weight:600}
+h4{margin:14px 0 6px;font-size:14px}
+.mut{color:var(--mut);font-size:13px}
+.gap{margin-top:22px}
+.empty{color:var(--mut);text-align:center;padding:28px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{background:var(--raise);border:1px solid var(--line);border-radius:4px;padding:6px 11px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--gold)}
+.primary{background:var(--gold);border-color:var(--gold);color:#16130d;font-weight:600}
+.danger{border-color:var(--red);color:#e7aaa2}
+.ghost{background:none}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:100%}
+label{display:grid;gap:5px;color:var(--mut);font-size:13px}
+.check{display:flex;align-items:center;gap:8px;color:var(--text)}
+.check input{width:auto}
+.stack{display:grid;gap:12px}
+.shell{display:flex;min-height:100%}
+.sidebar{width:236px;flex:none;background:var(--surf);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;transition:width .2s}
+.brand{padding:20px 18px;font-weight:600;color:var(--gold);border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.nav{display:grid;padding:10px;gap:2px;flex:1;align-content:start}
+.nav a{color:var(--mut);text-decoration:none;padding:9px 12px;border-radius:4px;white-space:nowrap;border-inline-start:2px solid transparent}
+.nav a:hover{color:var(--text);background:var(--raise)}
+.nav a.on{color:var(--text);background:var(--raise);border-inline-start-color:var(--gold)}
+.who{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.main{flex:1;min-width:0}
+.top{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgb(201 162 74 / .25)}
+.content{padding:22px;max-width:1240px}
+.kpis{display:flex;flex-wrap:wrap;border-block:1px solid var(--line);margin-bottom:22px}
+.kpi{flex:1;min-width:200px;padding:16px 20px;border-inline-start:1px solid var(--line);display:grid;gap:2px}
+.kpi:first-child{border:0}
+.kpi b{font-size:32px;font-weight:600;color:var(--gold);line-height:1.2}
+.kpi span{font-weight:600}
+.kpi small{color:var(--mut)}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:6px;padding:16px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tbl{overflow-x:auto;background:var(--surf);border:1px solid var(--line);border-radius:6px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
+th{color:var(--mut);font-weight:400;font-size:13px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.st{font-size:12px;padding:1px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+.st.active{color:var(--gold);border-color:var(--gold)}
+.st.error{color:var(--err);border-color:var(--red)}
+.lv{font-size:12px;color:var(--mut)}
+.lv.warn{color:var(--gold)}
+.lv.error{color:var(--err)}
+.alert{border-inline-start:3px solid var(--red);padding:6px 10px;background:var(--raise);border-radius:4px;margin:0 0 8px}
+.ev{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.ev.error{color:var(--err)}
+.bars{display:flex;gap:10px;height:210px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.track{flex:1;width:100%;display:flex;align-items:flex-end}
+.track i{display:block;width:100%;background:var(--gold);min-height:2px;border-radius:3px 3px 0 0}
+.bar-col span{font-size:12px}
+.bar-col small{color:var(--mut);font-size:11px}
+.overlay{position:fixed;inset:0;background:rgb(0 0 0 / .62);display:grid;place-items:center;padding:16px;z-index:50}
+.modal{background:var(--surf);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:8px;width:min(580px,100%);max-height:90vh;overflow:auto}
+.modal header,.modal footer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 18px}
+.modal footer{justify-content:flex-start;border-top:1px solid var(--line)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;padding:4px 18px 16px}
+.full{grid-column:1/-1}
+pre{white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1px solid var(--line);padding:10px;border-radius:4px;font-size:12px}
+.auth{min-height:100%;display:grid;place-items:center;padding:20px}
+.authcard{width:min(380px,100%);background:var(--surf);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:8px;padding:26px;display:grid;gap:14px}
+.toast{position:fixed;bottom:18px;inset-inline:0;margin-inline:auto;width:max-content;max-width:90%;background:var(--raise);border:1px solid var(--gold);border-radius:6px;padding:10px 16px;z-index:60}
+.toast.bad{border-color:var(--err)}
+.collapsed .sidebar{width:64px}
+.collapsed .nav span,.collapsed .who span,.collapsed .brand{display:none}
+@media (max-width:860px){
+  .sidebar{position:fixed;inset-block:0;inset-inline-start:0;z-index:40;transform:translateX(100%);transition:transform .2s}
+  .shell.open .sidebar{transform:none}
+  .grid2,.fields{grid-template-columns:1fr}
+  .content{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="auth" class="auth" hidden>
+  <form id="auth-form" class="authcard" data-mode="login">
+    <h1 id="auth-title">تسجيل الدخول</h1>
+    <label>اسم المستخدم<input name="username" required autocomplete="username" dir="ltr"></label>
+    <label>كلمة المرور<input name="password" type="password" required autocomplete="current-password" dir="ltr"></label>
+    <label id="setup-field" hidden>رمز الإعداد (السر SETUP_TOKEN في Cloudflare)<input name="setup_token" autocomplete="off" dir="ltr"></label>
+    <button id="auth-btn" class="primary">دخول</button>
+  </form>
+</div>
+
+<div id="app" class="shell" hidden>
+  <aside class="sidebar">
+    <div class="brand">DARK CONTROL PRO</div>
+    <nav class="nav" id="nav"></nav>
+    <div class="who"><span id="who"></span><button data-act="logout">خروج</button></div>
+  </aside>
+  <main class="main">
+    <header class="top"><button id="toggle" class="ghost" aria-label="إظهار أو إخفاء القائمة">☰</button><h1 id="title"></h1></header>
+    <div class="content" id="view"></div>
+  </main>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const PERMS = { bots: 'البوتات', providers: 'مزودو الـ API', services: 'الخدمات', orders: 'الطلبات', customers: 'العملاء', logs: 'السجلات' };
+const STATUS_AR = { pending: 'قيد الانتظار', processing: 'قيد التنفيذ', completed: 'مكتمل', partial: 'مكتمل جزئياً', canceled: 'ملغي', failed: 'فشل' };
+const CATS = { '': 'كل الأنواع', login: 'الدخول', admin: 'عمليات الإدارة', bot: 'البوتات', api: 'طلبات المزودين', system: 'النظام' };
+const DEFAULT_MAP = JSON.stringify({ key_field: 'key', action_field: 'action', format: 'form', actions: { add: 'add', status: 'status', balance: 'balance' }, fields: { service: 'service', link: 'link', quantity: 'quantity', order: 'order' }, response: { order: 'order', status: 'status', balance: 'balance', error: 'error' } }, null, 2);
+const S = { me: null, currency: 'USD', cache: {}, query: new URLSearchParams() };
+const money = (n) => `${(Number(n) / 100).toFixed(2)} ${S.currency}`;
+const kpi = (label, value, note) => `<div class="kpi"><b>${value}</b><span>${label}</span><small>${esc(note)}</small></div>`;
+const toolbar = (act, label) => `<div class="bar"><span></span><button class="primary" data-act="${act}">${label}</button></div>`;
+const table = (cols, rows, empty) => rows.length
+  ? `<div class="tbl"><table><thead><tr>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`
+  : `<p class="empty">${empty}</p>`;
+const canSee = (perm) => !perm || S.me.role === 'owner' || S.me.perms.includes(perm);
+
+async function api(method, path, body) {
+  const res = await fetch(path, {
+    method,
+    headers: body !== undefined ? { 'content-type': 'application/json' } : {},
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 401 && path !== '/api/login' && path !== '/api/setup') boot();
+    throw new Error(data.error || 'حدث خطأ غير متوقع');
+  }
+  return data;
+}
+
+function toast(msg, ok = true) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast' + (ok ? '' : ' bad');
+  t.hidden = false;
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+
+async function boot() {
+  const me = await (await fetch('/api/me')).json();
+  S.currency = me.currency;
+  if (!me.user) return showAuth(me.setup_required);
+  S.me = me.user;
+  $('#auth').hidden = true;
+  $('#app').hidden = false;
+  $('#who').textContent = `${me.user.username} · ${me.user.role === 'owner' ? 'مالك' : 'مشرف'}`;
+  buildNav();
+  render();
+}
+
+function showAuth(setup) {
+  $('#app').hidden = true;
+  $('#auth').hidden = false;
+  $('#auth-title').textContent = setup ? 'إعداد حساب المالك' : 'تسجيل الدخول';
+  $('#auth-btn').textContent = setup ? 'إنشاء الحساب' : 'دخول';
+  $('#setup-field').hidden = !setup;
+  $('#auth-form').dataset.mode = setup ? 'setup' : 'login';
+}
+
+$('#auth-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const setup = f.dataset.mode === 'setup';
+  try {
+    await api('POST', setup ? '/api/setup' : '/api/login', {
+      username: f.username.value.trim(),
+      password: f.password.value,
+      ...(setup ? { setup_token: f.setup_token.value.trim() } : {}),
+    });
+    if (setup) toast('تم إنشاء حساب المالك. سجّل الدخول الآن.');
+    f.password.value = '';
+    boot();
+  } catch (err) { toast(err.message, false); }
+});
+
+$('#toggle').addEventListener('click', () => {
+  const shell = $('#app');
+  if (matchMedia('(max-width: 860px)').matches) shell.classList.toggle('open');
+  else shell.classList.toggle('collapsed');
+});
+$('#nav').addEventListener('click', () => $('#app').classList.remove('open'));
+
+function buildNav() {
+  $('#nav').innerHTML = Object.entries(VIEWS)
+    .filter(([, v]) => canSee(v[1]))
+    .map(([k, v]) => `<a href="#${k}" data-v="${k}"><span>${v[0]}</span></a>`).join('');
+}
+
+async function render() {
+  if (!S.me) return;
+  const [key0, qs] = (location.hash.slice(1) || 'dashboard').split('?');
+  const key = VIEWS[key0] ? key0 : 'dashboard';
+  S.query = new URLSearchParams(qs || '');
+  $('#title').textContent = VIEWS[key][0];
+  document.querySelectorAll('#nav a').forEach((a) => a.classList.toggle('on', a.dataset.v === key));
+  const el = $('#view');
+  el.innerHTML = '<p class="empty">جارٍ التحميل…</p>';
+  try { await VIEWS[key][2](el); }
+  catch (e) { el.innerHTML = `<p class="empty">${esc(e.message)}</p>`; }
+}
+window.addEventListener('hashchange', render);
+
+// ----- generic forms -----
+function field(f) {
+  if (f.type === 'checkbox') return `<label class="check"><input type="checkbox" name="${f.k}" ${f.value ? 'checked' : ''}> ${esc(f.label)}</label>`;
+  let input;
+  if (f.type === 'select') {
+    input = `<select name="${f.k}">${f.opts.map(([v, t]) => `<option value="${esc(v)}" ${String(v) === String(f.value ?? '') ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
+  } else if (f.type === 'textarea') {
+    input = `<textarea name="${f.k}" rows="8" dir="ltr">${esc(f.value ?? '')}</textarea>`;
+  } else {
+    input = `<input name="${f.k}" type="${f.type || 'text'}" value="${esc(f.value ?? '')}" placeholder="${esc(f.ph || '')}" ${f.money ? 'step="0.01"' : ''} ${f.ltr ? 'dir="ltr"' : ''} ${f.type === 'password' ? 'autocomplete="new-password"' : ''}>`;
+  }
+  return `<label class="${f.full ? 'full' : ''}">${esc(f.label)}${input}${f.hint ? `<small class="mut">${esc(f.hint)}</small>` : ''}</label>`;
+}
+
+function collect(form, fields) {
+  const out = {};
+  for (const f of fields) {
+    const el = form.elements[f.k];
+    if (!el) continue;
+    if (f.type === 'checkbox') { out[f.k] = el.checked; continue; }
+    const raw = el.value.trim();
+    if (raw === '' && f.type !== 'select') {
+      if (f.req) throw new Error(`${f.label} مطلوب`);
+      continue;
+    }
+    out[f.k] = f.money ? Math.round(Number(raw) * 100) : f.type === 'number' ? Number(raw) : raw;
+  }
+  return out;
+}
+
+function openForm({ title, fields, submit, submitLabel = 'حفظ' }) {
+  const wrap = document.createElement('div');
+  wrap.className = 'overlay';
+  wrap.innerHTML = `<form class="modal" novalidate>
+    <header><h3>${esc(title)}</h3><button type="button" class="ghost" data-close>إغلاق</button></header>
+    <div class="fields">${fields.map(field).join('')}</div>
+    <footer><button class="primary">${esc(submitLabel)}</button><button type="button" data-close>إلغاء</button></footer></form>`;
+  document.body.append(wrap);
+  const form = wrap.querySelector('form');
+  wrap.addEventListener('click', (e) => { if (e.target === wrap || e.target.closest('[data-close]')) wrap.remove(); });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await submit(collect(form, fields));
+      wrap.remove();
+      toast('تم الحفظ');
+      render();
+    } catch (err) { toast(err.message, false); }
+  });
+  form.querySelector('input:not([type=checkbox]), select, textarea')?.focus();
+}
+
+function openInfo(title, html) {
+  const wrap = document.createElement('div');
+  wrap.className = 'overlay';
+  wrap.innerHTML = `<div class="modal" role="dialog" aria-label="${esc(title)}"><header><h3>${esc(title)}</h3><button class="ghost" data-close>إغلاق</button></header><div class="fields" style="grid-template-columns:1fr">${html}</div></div>`;
+  document.body.append(wrap);
+  wrap.addEventListener('click', (e) => { if (e.target === wrap || e.target.closest('[data-close]')) wrap.remove(); });
+}
+
+function botForm(b) {
+  const provs = [['', 'بدون مزود'], ...S.cache.providers.map((p) => [p.id, p.name])];
+  openForm({
+    title: b ? 'تعديل البوت' : 'إضافة بوت',
+    fields: [
+      { k: 'name', label: 'اسم البوت', req: true, value: b?.name },
+      { k: 'token', label: 'توكن البوت', type: 'password', req: !b, ltr: true, ph: '123456:ABC…', hint: b ? 'اتركه فارغاً للإبقاء على التوكن الحالي.' : 'يُشفّر فور الحفظ ولا يظهر مرة أخرى.' },
+      { k: 'provider_id', label: 'مزود الخدمة', type: 'select', opts: provs, value: b?.provider_id ?? '' },
+      { k: 'require_balance', label: 'الخصم من رصيد العميل قبل التنفيذ', type: 'checkbox', value: b ? !!b.require_balance : true },
+    ],
+    submit: (v) => (b ? api('PATCH', `/api/bots/${b.id}`, v) : api('POST', '/api/bots', v)),
+  });
+}
+
+function providerForm(p) {
+  openForm({
+    title: p ? 'تعديل المزود' : 'إضافة مزود API',
+    fields: [
+      { k: 'name', label: 'اسم المزود', req: true, value: p?.name },
+      { k: 'api_url', label: 'رابط الـ API (https)', req: true, ltr: true, value: p?.api_url, ph: 'https://…' },
+      { k: 'api_key', label: 'مفتاح الـ API', type: 'password', req: !p, ltr: true, hint: p ? 'اتركه فارغاً للإبقاء على المفتاح الحالي.' : 'يُشفّر فور الحفظ.' },
+      { k: 'mapping', label: 'ربط الحقول بوثائق المزود (JSON)', type: 'textarea', full: true, value: p?.mapping ? JSON.stringify(JSON.parse(p.mapping), null, 2) : DEFAULT_MAP, hint: 'عدّل أسماء الحقول والأوامر لتطابق الوثائق الرسمية لهذا المزود.' },
+    ],
+    submit: (v) => (p ? api('PATCH', `/api/providers/${p.id}`, v) : api('POST', '/api/providers', v)),
+  });
+}
+
+function serviceForm() {
+  openForm({
+    title: 'إضافة خدمة',
+    fields: [
+      { k: 'provider_id', label: 'المزود', type: 'select', opts: S.cache.providers.map((p) => [p.id, p.name]), req: true },
+      { k: 'provider_service_id', label: 'رقم الخدمة لدى المزود', req: true, ltr: true },
+      { k: 'name', label: 'اسم الخدمة', req: true },
+      { k: 'price_per_1000', label: 'السعر لكل 1000 وحدة', type: 'number', money: true, req: true, ltr: true },
+      { k: 'min_qty', label: 'الحد الأدنى للكمية', type: 'number', value: 1, req: true, ltr: true },
+      { k: 'max_qty', label: 'الحد الأقصى للكمية', type: 'number', value: 100000, req: true, ltr: true },
+    ],
+    submit: (v) => api('POST', '/api/services', v),
+  });
+}
+
+// ----- views -----
+async function viewDashboard(el) {
+  const d = await api('GET', '/api/dashboard');
+  const sum = (o) => Object.values(o).reduce((a, n) => a + n, 0);
+  const b = d.bots;
+  const o = d.orders;
+  const total = sum(b);
+  const bad = (o.failed || 0) + (o.canceled || 0);
+  const max = Math.max(1, ...d.series.map((s) => s.n));
+  el.innerHTML = `<div class="kpis">
+      ${kpi('البوتات', total, `${b.active || 0} يستقبل · ${b.error || 0} به خطأ · ${b.stopped || 0} متوقف`)}
+      ${kpi('الطلبات', sum(o), `${o.completed || 0} مكتمل · ${bad} فشل أو ملغي`)}
+      ${kpi('العملاء', d.customers, 'عملاء سجّلوا عبر البوتات')}
+    </div>
+    <div class="grid2">
+      <section class="panel"><h3>الطلبات خلال 7 أيام</h3>
+        <div class="bars">${d.series.map((s) => `<div class="bar-col"><div class="track"><i style="height:${Math.round((s.n / max) * 100)}%"></i></div><span>${s.n}</span><small>${s.day}</small></div>`).join('')}</div>
+      </section>
+      <section class="panel"><h3>تنبيهات</h3>
+        ${d.alerts.map((a) => `<p class="alert">البوت «${esc(a.name)}» يحتاج مراجعة في قسم البوتات.</p>`).join('') || `<p class="mut">${total ? 'لا توجد تنبيهات حالياً.' : 'أضف أول بوت من قسم البوتات لتبدأ.'}</p>`}
+        <h3 class="gap">آخر الأحداث</h3>
+        ${d.recent.map((r) => `<p class="ev ${esc(r.level)}">${esc(r.message)} <small class="mut">${esc(r.created_at)}</small></p>`).join('') || '<p class="mut">لا توجد أحداث بعد.</p>'}
+      </section>
+    </div>`;
+}
+
+async function viewBots(el) {
+  const [bots, providers] = await Promise.all([api('GET', '/api/bots'), api('GET', '/api/providers')]);
+  S.cache.bots = bots;
+  S.cache.providers = providers;
+  const label = { active: 'يستقبل', error: 'خطأ', stopped: 'متوقف' };
+  el.innerHTML = toolbar('add-bot', 'إضافة بوت') + table(['البوت', 'المعرّف', 'المزود', 'الحالة', 'آخر تحديث', ''],
+    bots.map((b) => `<tr>
+      <td>${esc(b.name)}<br><small class="mut" dir="ltr">توكن ••••${esc(b.token_last4)}</small></td>
+      <td dir="ltr">${b.username ? '@' + esc(b.username) : '—'}</td>
+      <td>${esc(b.provider_name || 'غير مرتبط')}</td>
+      <td><span class="st ${esc(b.status)}">${label[b.status] || esc(b.status)}</span></td>
+      <td>${esc(b.last_update_at || 'لم يصل تحديث بعد')}</td>
+      <td class="acts">
+        <button data-act="bot-test" data-id="${b.id}">اختبار الاتصال</button>
+        <button data-act="bot-toggle" data-id="${b.id}" data-on="${b.enabled ? 0 : 1}">${b.enabled ? 'إيقاف الاستقبال' : 'تشغيل الاستقبال'}</button>
+        <button data-act="bot-edit" data-id="${b.id}">تعديل</button>
+        <button data-act="bot-errors" data-id="${b.id}">السجل</button>
+        <button class="danger" data-act="bot-delete" data-id="${b.id}">حذف</button>
+      </td></tr>`),
+    'لا توجد بوتات بعد. أضف بوتاً بتوكن من BotFather لتبدأ استقبال الرسائل.');
+}
+
+async function viewProviders(el) {
+  const list = await api('GET', '/api/providers');
+  S.cache.providers = list;
+  el.innerHTML = toolbar('add-provider', 'إضافة مزود') + table(['المزود', 'الرابط', 'المفتاح', ''],
+    list.map((p) => `<tr>
+      <td>${esc(p.name)}</td>
+      <td dir="ltr">${esc(new URL(p.api_url).host)}</td>
+      <td dir="ltr">••••${esc(p.key_last4)}</td>
+      <td class="acts">
+        <button data-act="prov-test" data-id="${p.id}">اختبار والرصيد</button>
+        <button data-act="prov-edit" data-id="${p.id}">تعديل</button>
+        <button class="danger" data-act="prov-delete" data-id="${p.id}">حذف</button>
+      </td></tr>`),
+    'لا يوجد مزودون بعد. أضف مزود API لتُنفَّذ عليه الطلبات.');
+}
+
+async function viewServices(el) {
+  const [list, provs] = await Promise.all([api('GET', '/api/services'), api('GET', '/api/providers')]);
+  S.cache.providers = provs;
+  el.innerHTML = toolbar('add-service', 'إضافة خدمة') + table(['المزود', 'الرقم لدى المزود', 'الاسم', 'السعر لكل 1000', 'الحد الأدنى', 'الحد الأقصى', ''],
+    list.map((s) => `<tr>
+      <td>${esc(s.provider_name)}</td><td dir="ltr">${esc(s.provider_service_id)}</td><td>${esc(s.name)}</td>
+      <td>${money(s.price_per_1000)}</td><td>${s.min_qty}</td><td>${s.max_qty}</td>
+      <td class="acts"><button class="danger" data-act="svc-delete" data-id="${s.id}">حذف</button></td></tr>`),
+    'لا توجد خدمات بعد. أضف الخدمات التي يعرضها البوت ويرسلها إلى المزود.');
+}
+
+async function viewOrders(el) {
+  const st = S.query.get('status') || '';
+  const list = await api('GET', `/api/orders${st ? `?status=${encodeURIComponent(st)}` : ''}`);
+  const options = [['', 'كل الحالات'], ...Object.entries(STATUS_AR)]
+    .map(([v, t]) => `<option value="${v}" ${v === st ? 'selected' : ''}>${t}</option>`).join('');
+  el.innerHTML = `<div class="bar"><div class="row"><select id="ostatus" style="width:auto">${options}</select></div></div>`
+    + table(['#', 'البوت', 'العميل', 'الخدمة', 'الكمية', 'السعر', 'الحالة', 'التاريخ', ''],
+      list.map((o) => `<tr>
+        <td>${o.id}</td><td>${esc(o.bot_name || 'محذوف')}</td>
+        <td dir="ltr">${o.tg_username ? '@' + esc(o.tg_username) : esc(o.tg_user_id)}</td>
+        <td>${esc(o.service_name || '—')}</td><td>${o.quantity}</td><td>${money(o.price)}</td>
+        <td><span class="st ${o.status === 'completed' ? 'active' : (o.status === 'failed' || o.status === 'canceled') ? 'error' : ''}">${STATUS_AR[o.status] || esc(o.status)}</span></td>
+        <td>${esc(o.created_at)}</td>
+        <td class="acts"><button data-act="order-info" data-id="${o.id}">التفاصيل</button><button data-act="order-refresh" data-id="${o.id}">تحديث الحالة</button></td></tr>`),
+      'لا توجد طلبات مطابقة.');
+  $('#ostatus').addEventListener('change', (e) => { location.hash = `#orders${e.target.value ? '?status=' + e.target.value : ''}`; });
+}
+
+async function viewCustomers(el) {
+  const list = await api('GET', '/api/customers');
+  const owner = S.me.role === 'owner';
+  el.innerHTML = table(['العميل', 'البوت', 'الرصيد', 'عدد الطلبات', ''],
+    list.map((c) => `<tr>
+      <td dir="ltr">${c.tg_username ? '@' + esc(c.tg_username) : esc(c.tg_user_id)}</td>
+      <td>${esc(c.bot_name || 'محذوف')}</td><td>${money(c.balance)}</td><td>${c.orders_count}</td>
+      <td class="acts">
+        <button data-act="cust-ledger" data-id="${c.id}">سجل الرصيد</button>
+        ${owner ? `<button data-act="cust-adjust" data-id="${c.id}">تعديل الرصيد</button>` : ''}
+      </td></tr>`),
+    'لا يوجد عملاء بعد. يُسجَّل العميل تلقائياً عند أول رسالة إلى البوت.');
+}
+
+async function viewLogs(el) {
+  const cat = S.query.get('category') || '';
+  const bot = S.query.get('bot_id') || '';
+  const qs = new URLSearchParams();
+  if (cat) qs.set('category', cat);
+  if (bot) qs.set('bot_id', bot);
+  const rows = await api('GET', `/api/logs?${qs}`);
+  el.innerHTML = `<div class="bar"><div class="row">
+      <select id="lcat" style="width:auto">${Object.entries(CATS).map(([v, t]) => `<option value="${v}" ${v === cat ? 'selected' : ''}>${t}</option>`).join('')}</select>
+      ${bot ? `<span class="mut">بوت رقم ${esc(bot)} · <a href="#logs">عرض الكل</a></span>` : ''}
+    </div><button data-act="logs-refresh">تحديث السجلات</button></div>`
+    + table(['الوقت', 'النوع', 'المستوى', 'الجهة', 'الرسالة'],
+      rows.map((r) => `<tr><td>${esc(r.created_at)}</td><td>${esc(CATS[r.category] || r.category)}</td>
+        <td><span class="lv ${esc(r.level)}">${esc(r.level)}</span></td><td dir="ltr">${esc(r.actor)}</td><td>${esc(r.message)}</td></tr>`),
+      'لا توجد سجلات مطابقة.');
+  $('#lcat').addEventListener('change', (e) => {
+    const p = new URLSearchParams();
+    if (e.target.value) p.set('category', e.target.value);
+    if (bot) p.set('bot_id', bot);
+    location.hash = `#logs${p.toString() ? '?' + p : ''}`;
+  });
+}
+
+async function viewSettings(el) {
+  const owner = S.me.role === 'owner';
+  let staff = '';
+  if (owner) {
+    const list = await api('GET', '/api/staff');
+    staff = `<section class="panel"><div class="bar"><h3>المشرفون</h3><button class="primary" data-act="add-staff">إضافة مشرف</button></div>`
+      + table(['اسم المستخدم', 'الدور', 'الصلاحيات', ''],
+        list.map((s) => {
+          const perms = s.role === 'owner' ? 'كل الصلاحيات' : (JSON.parse(s.perms).map((p) => PERMS[p]).join('، ') || 'بدون صلاحيات');
+          return `<tr><td dir="ltr">${esc(s.username)}</td><td>${s.role === 'owner' ? 'مالك' : 'مشرف'}</td><td>${esc(perms)}</td>
+            <td class="acts">${s.role === 'owner' ? '' : `<button class="danger" data-act="staff-delete" data-id="${s.id}">حذف</button>`}</td></tr>`;
+        }), 'لا يوجد مشرفون بعد.') + '</section>';
+  }
+  el.innerHTML = `<div class="grid2">
+    <section class="panel"><h3>تغيير كلمة المرور</h3>
+      <form id="pwform" class="stack">
+        <label>كلمة المرور الحالية<input type="password" name="current" required autocomplete="current-password" dir="ltr"></label>
+        <label>كلمة المرور الجديدة<input type="password" name="next" required minlength="10" autocomplete="new-password" dir="ltr"><small class="mut">10 أحرف على الأقل. يُنهي ذلك الجلسات الأخرى.</small></label>
+        <div><button class="primary">حفظ كلمة المرور</button></div>
+      </form>
+      <h3 class="gap">الجلسات</h3>
+      <p class="mut">إنهاء كل الجلسات يُخرجك من هذا الجهاز أيضاً.</p>
+      <button class="danger" data-act="revoke">إنهاء جميع الجلسات</button>
+    </section>
+    ${staff}
+  </div>`;
+  $('#pwform').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.currentTarget;
+    try {
+      await api('POST', '/api/account/password', { current: f.current.value, next: f.next.value });
+      toast('تم تغيير كلمة المرور');
+      f.reset();
+    } catch (err) { toast(err.message, false); }
+  });
+}
+
+const VIEWS = {
+  dashboard: ['الرئيسية', null, viewDashboard],
+  bots: ['البوتات', 'bots', viewBots],
+  providers: ['مزودو الـ API', 'providers', viewProviders],
+  services: ['الخدمات', 'services', viewServices],
+  orders: ['الطلبات', 'orders', viewOrders],
+  customers: ['العملاء والأرصدة', 'customers', viewCustomers],
+  logs: ['السجلات', 'logs', viewLogs],
+  settings: ['الإعدادات', null, viewSettings],
+};
+
+// ----- actions (event delegation) -----
+const ACTIONS = {
+  'add-bot': () => botForm(),
+  'bot-edit': (id) => botForm(S.cache.bots.find((b) => b.id == id)),
+  'bot-test': async (id) => {
+    const r = await api('POST', `/api/bots/${id}/test`);
+    toast(r.ok ? `متصل: @${r.username}` : r.error, r.ok);
+    if (!r.ok) render();
+  },
+  'bot-toggle': async (id, el) => {
+    const on = el.dataset.on === '1';
+    await api('POST', `/api/bots/${id}/webhook`, { enabled: on });
+    toast(on ? 'بدأ الاستقبال' : 'أُوقف الاستقبال');
+    render();
+  },
+  'bot-errors': (id) => { location.hash = `#logs?bot_id=${id}`; },
+  'bot-delete': async (id) => {
+    if (!confirm('حذف البوت وعملاءه؟ الطلبات والسجلات تبقى للمراجعة.')) return;
+    await api('DELETE', `/api/bots/${id}`);
+    toast('حُذف البوت');
+    render();
+  },
+  'add-provider': () => providerForm(),
+  'prov-edit': (id) => providerForm(S.cache.providers.find((p) => p.id == id)),
+  'prov-test': async (id) => {
+    const r = await api('POST', `/api/providers/${id}/test`);
+    toast(r.ok ? `الرصيد لدى المزود: ${r.balance ?? 'غير متوفر'}` : r.error, r.ok);
+  },
+  'prov-delete': async (id) => {
+    if (!confirm('حذف المزود؟')) return;
+    await api('DELETE', `/api/providers/${id}`);
+    toast('حُذف المزود');
+    render();
+  },
+  'add-service': () => serviceForm(),
+  'svc-delete': async (id) => {
+    if (!confirm('حذف الخدمة؟')) return;
+    await api('DELETE', `/api/services/${id}`);
+    toast('حُذفت الخدمة');
+    render();
+  },
+  'order-info': async (id) => {
+    const o = await api('GET', `/api/orders/${id}`);
+    openInfo(`طلب رقم ${o.id}`,
+      `<p>الحالة: ${esc(STATUS_AR[o.status] || o.status)}</p>
+       <p>رقم الطلب لدى المزود: <span dir="ltr">${esc(o.provider_order_id || '—')}</span></p>
+       <h4>سجل التغييرات</h4>
+       <ul>${o.events.map((e) => `<li>${esc(STATUS_AR[e.status] || e.status)} — ${esc(e.note || '')} <small class="mut">${esc(e.created_at)}</small></li>`).join('') || '<li class="mut">لا توجد تغييرات بعد.</li>'}</ul>
+       <h4>استجابة المزود</h4><pre dir="ltr">${esc(o.provider_response || '—')}</pre>`);
+  },
+  'order-refresh': async (id) => {
+    const r = await api('POST', `/api/orders/${id}/refresh`);
+    toast(`الحالة الآن: ${STATUS_AR[r.status] || r.status}`);
+    render();
+  },
+  'cust-ledger': async (id) => {
+    const rows = await api('GET', `/api/customers/${id}/ledger`);
+    openInfo('سجل الرصيد', table(['المبلغ', 'السبب', 'بواسطة', 'التاريخ'],
+      rows.map((r) => `<tr><td dir="ltr">${(r.amount > 0 ? '+' : '') + money(r.amount)}</td><td>${esc(r.reason)}</td><td>${esc(r.actor)}</td><td>${esc(r.created_at)}</td></tr>`),
+      'لا توجد حركات بعد.'));
+  },
+  'cust-adjust': (id) => openForm({
+    title: 'تعديل الرصيد',
+    submitLabel: 'تطبيق',
+    fields: [
+      { k: 'amount', label: 'المبلغ (موجب للإضافة، وسالب للخصم)', type: 'number', money: true, req: true, ltr: true },
+      { k: 'reason', label: 'سبب التعديل', req: true, full: true },
+    ],
+    submit: (v) => api('POST', `/api/customers/${id}/balance`, v),
+  }),
+  'logs-refresh': () => render(),
+  'add-staff': () => openForm({
+    title: 'إضافة مشرف',
+    fields: [
+      { k: 'username', label: 'اسم المستخدم', req: true, ltr: true },
+      { k: 'password', label: 'كلمة مرور مؤقتة (10 أحرف على الأقل)', type: 'password', req: true, ltr: true },
+      ...Object.entries(PERMS).map(([k, t]) => ({ k: `p_${k}`, label: t, type: 'checkbox' })),
+    ],
+    submit: (v) => api('POST', '/api/staff', {
+      username: v.username,
+      password: v.password,
+      perms: Object.keys(PERMS).filter((k) => v[`p_${k}`]),
+    }),
+  }),
+  'staff-delete': async (id) => {
+    if (!confirm('حذف هذا المشرف؟')) return;
+    await api('DELETE', `/api/staff/${id}`);
+    toast('حُذف المشرف');
+    render();
+  },
+  revoke: async () => {
+    if (!confirm('سيتم إنهاء كل الجلسات، بما فيها جلستك الحالية. متابعة؟')) return;
+    await api('POST', '/api/account/revoke-sessions');
+    location.reload();
+  },
+  logout: async () => {
+    await api('POST', '/api/logout');
+    location.reload();
+  },
+};
+
+document.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el || !ACTIONS[el.dataset.act]) return;
+  try { await ACTIONS[el.dataset.act](el.dataset.id, el); }
+  catch (err) { toast(err.message, false); }
+});
+
+boot();
+</script>
+</body>
+</html>
